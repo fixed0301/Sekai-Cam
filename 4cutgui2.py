@@ -49,32 +49,32 @@ class Obj:
 # object setting
 
 slide1 = Obj()
-slide1.put_img('gui_imgs/슬라이드1.png')
+slide1.put_img('gui_imgs_v2/슬라이드1.png')
 slide1.change_size(1920, 1080)
 slide1.x, slide1.y = 0, 0
 
 slide2 = Obj()
-slide2.put_img('gui_imgs/슬라이드2.png')
+slide2.put_img('gui_imgs_v2/슬라이드2.png')
 slide2.change_size(1920, 1080)
 slide2.x, slide2.y = 0, 0
 
 slide3 = Obj()
-slide3.put_img('gui_imgs/슬라이드3.png')
+slide3.put_img('gui_imgs_v2/슬라이드3.png')
 slide3.change_size(1920, 1080)
 slide3.x, slide3.y = 0, 0
 
 slide4 = Obj()
-slide4.put_img('gui_imgs/슬라이드4.png')
+slide4.put_img('gui_imgs_v2/슬라이드4.png')
 slide4.change_size(1920, 1080)
 slide4.x, slide4.y = 0, 0
 
 slide5 = Obj()
-slide5.put_img('gui_imgs/슬라이드5.png')
+slide5.put_img('gui_imgs_v2/슬라이드5.png')
 slide5.change_size(1920, 1080)
 slide5.x, slide5.y = 0, 0
 
 slide6 = Obj()
-slide6.put_img('gui_imgs/슬라이드6.png')
+slide6.put_img('gui_imgs_v2/슬라이드6.png')
 slide6.change_size(1920, 1080)
 slide6.x, slide6.y = 0, 0
 
