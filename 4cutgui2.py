@@ -163,13 +163,25 @@ while SB == 0:
                 bool1 = True
         # check2
         if not bool2:
-            if 605 < mx < 814 and 752 < my < 964:
-                PEOPLE_NUM = 2
-                check2.x, check2.y = 610, 724
+            if 189 < mx < 348 and 752 < my < 964:
+                ANIME_NUM = 1
+                check2.x, check2.y = 194, 724
                 bool2 = True
-            elif 1104 < mx < 1316 and 753 < my < 963:
-                PEOPLE_NUM = 4
-                check2.x, check2.y = 1100, 724
+            elif 353 < mx < 768 and 753 < my < 963:
+                ANIME_NUM = 2
+                check2.x, check2.y = 505, 724
+                bool2 = True
+            elif 807 < mx < 1077 and 753 < my < 963:
+                ANIME_NUM = 3
+                check2.x, check2.y = 830, 724
+                bool2 = True
+            elif 1118 < mx < 1387 and 753 < my < 963:
+                ANIME_NUM = 4
+                check2.x, check2.y = 1130, 724
+                bool2 = True
+            elif 1432 < mx < 1697 and 753 < my < 963:
+                ANIME_NUM = 5
+                check2.x, check2.y = 1440, 724
                 bool2 = True
         if bool1:
             check1.show()
