@@ -2,7 +2,24 @@ import cv2
 import glob
 from qr import *
 from send_cam_img import *
-def makeframe(frame_path):
+server_url = 'http://192.168.1.19:5000/animate'
+def upload_image(image_path, server_url, anime_num):
+    with open(image_path, 'rb') as file:
+        upload = {'image': file}
+        data = {'anime_num': anime_num}
+        while True:
+            try:
+                res = requests.post(server_url, files=upload, data=data, timeout=10)
+                if res.status_code == 200: # ? 밑에 result 는 그냥 photo를 같은데
+                    with open('result/img1_anigan.jpg', 'wb') as result_file:
+                        result_file.write(res.content)
+                    print("Image processed and saved successfully.")
+                    break
+            except requests.exceptions.RequestException as e:
+                print(f"Request failed: {e}. Retrying in 10 seconds...")
+                time.sleep(10)
+
+def makeframe(frame_path, anime_num):
     # 네컷 프레임 이미지 불러오기
     frame = cv2.imread(frame_path)
     frame = cv2.resize(frame, dsize=(2000,3000),interpolation=cv2.INTER_AREA)
@@ -29,13 +46,11 @@ def makeframe(frame_path):
         img = cv2.imread(filename) # filename = 'photos/img1.jpg'
 
         if filename.split('.')[0][-1] == '1':
+            image_path = 'photos/img1.jpg'
             # 슉하고 처리할 이미지 정보를 보내면 ex. img1 처리해조
-            send(filename)
-            print('sent what to be animated')
-            print('waiting for receiving')
-
-            #슉하고 받아서 아무일 없던것처럼
-            img = receive_animated()
+            upload_image(image_path, server_url, anime_num)
+            print('animating and done')
+            img = cv2.imread('anime_result/img1_anigan.jpg')
 
         h = len(img)
         w = len(img[0])
@@ -59,7 +74,8 @@ def makeframe(frame_path):
         frame[lp1[1]+3:lp2[1]+3, lp1[0]+3:lp2[0]+3] = roi
         roi = cv2.resize(img, dsize=(rp2[0] - rp1[0], rp2[1] - rp1[1]), interpolation=cv2.INTER_AREA)
         frame[rp1[1]+3:rp2[1]+3, rp1[0]+3:rp2[0]+3] = roi
-
+    eigen = getMD5(str(time.time()))[:10]
+    '''
     # QR 코드 생성
     eigen = getMD5(str(time.time()))[:10]
     urltoQR('qrqr.png','http://sada.dothome.co.kr/photo/'+eigen+'.png')
@@ -79,8 +95,8 @@ def makeframe(frame_path):
     frame[lp1[1]+2:lp2[1]+2, lp1[0]+1:lp2[0]+1] = roi
     roi = cv2.resize(qrimg, dsize=(rp2[0] - rp1[0], rp2[1] - rp1[1]), interpolation=cv2.INTER_AREA)
     frame[rp1[1]+1:rp2[1]+1, rp1[0]:rp2[0]] = roi
-
-    return frame,eigen
+    '''
+    return frame, eigen
 
 def animate():
     pass
@@ -90,13 +106,11 @@ def animate():
         animateoneImage('photos/'+name,'photos/'+'anim/'+name) #save at 'photos/'+name'''
 
 
-def generateImage(frameNum): # frameNum = 총 프레임 수
-    if frameNum == 1: # 애니화될 이미지
-        animeframe = 'frames/'+str(frameNum)+'.jpg'
+def generateImage(frameNum, anime_num): # frameNum = 몇번째 프레임
     frame = 'frames/'+str(frameNum)+'.jpg'
-    result, eigen = makeframe(frame) # 최종 이미지를 sada 서버에 올리기 (QR 연결되게)
+    result, eigen = makeframe(frame, anime_num) # 최종 이미지를 sada 서버에 올리기 (QR 연결되게)
     cv2.imwrite('results/' + eigen + '.png', result)
-    uploadtoServer('results/' + eigen + '.png', eigen)
+    #uploadtoServer('results/' + eigen + '.png', eigen)
 
     return frame
 

@@ -20,7 +20,7 @@ def cropface(frame):
     return facial_img
 '''
 
-def send(filename):
+def send_n_receive(filename):
     # Flask 서버로 1번 파일만 업로드
     upload_url = 'http://172.16.82.127:5000/uploads'
     list_url = 'http://172.16.82.127:5000/files'

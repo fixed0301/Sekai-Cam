@@ -215,10 +215,7 @@ while SB == 0:
             if not ret:
                 print("failed to grab frame")
 
-            if CUT == '1':
-                img_name = 'photos2send/img' + str(CUT) + '.jpg'
-            else:
-                img_name = 'photos/img' + str(CUT) + '.jpg'
+            img_name = 'photos/img' + str(CUT) + '.jpg'
 
             cv2.imwrite(img_name, crop_img)
             print("{} written!".format(img_name))
@@ -244,12 +241,10 @@ while SB == 0:
         screen.blit(pygame.transform.scale(nimg, (1620*0.71, 1080*0.71)), (381, 190))
         pygame.display.flip()
 
-        #send() # 연구컴에 photos 안에 찍힌 사진 전송
-
     elif SN == 5:
         slide6.show()
         pygame.display.flip()
-        loc = generateImage(FRAME_NUM) # 완성본
+        loc = generateImage(FRAME_NUM, ANIME_NUM) # 완성본 파일경로
         for _ in range(FRAME_NUM//2):
             printFile(loc)
         pygame.time.delay(5000)
