@@ -6,7 +6,7 @@ import requests
 
 server_url = 'http://0.tcp.jp.ngrok.io:18626/animate'
 
-def upload_image(image_path, server_url, anime_num):
+def upload_image(image_path, server_url, anime_num, num):
     with open(image_path, 'rb') as file:
         upload = {'image': file}
         data = {'anime_num': anime_num}
@@ -14,7 +14,7 @@ def upload_image(image_path, server_url, anime_num):
         try:
             res = requests.post(server_url, files=upload, data=data, timeout=10)
             if res.status_code == 200:
-                with open('anime_result/img1_anigan.jpg', 'wb') as result_file:
+                with open(f'photos/img{num}_anigan.jpg', 'wb') as result_file:
                     result_file.write(res.content)
                 print("Image processed and saved successfully.")
 
@@ -44,23 +44,25 @@ def makeframe(frame_path, anime_num):
     }
 
     # 프레임 위에 이미지 넣기
-    # photos/anim/*.jpg
-    # 4개 프레임에 대해 반복, 먼저 img1부터 처리하면
-    for (filename, left_box, right_box) in zip(glob.iglob('photos/*.jpg', recursive=True), left_boxes.values(), right_boxes.values()):
+    # photos/anime/*.jpg
+    # 애니화된 이미지들까지 photos안에 넣자
+    for filename in glob.iglob('photos/*.jpg', recursive=True):
+        print(filename)
         if filename.split('.')[0][-1] == '1':
             image_path = 'photos/img1.jpg'
-            upload_image(image_path, server_url, anime_num)
-            print('animating and done')
-            img = cv2.imread('anime_result/img1_anigan.jpg')
-        else:
-            img = cv2.imread(filename)  # filename = 'photos/img2.jpg'
+            upload_image(image_path, server_url, anime_num[0], filename.split('.')[0][-1])
+            print('animating and done_1')
 
+        elif filename.split('.')[0][-1] == '2':
+            image_path = 'photos/img2.jpg'
+            upload_image(image_path, server_url, anime_num[1], filename.split('.')[0][-1]) # 두번째 선택한 애니로
+            print('animating and done_2')
 
+    for (filename, left_box, right_box) in zip(glob.iglob('photos/*.jpg', recursive=True), left_boxes.values(), right_boxes.values()):
+        img = cv2.imread(filename)
         h = len(img)
         w = len(img[0])
-        '''
-        애니화된 이미지 끼워넣기       
-        '''
+
         if w * 2 / 3 > h:
             h_f = h - h % 6
             w_f = int(h_f * 3 / 2)
@@ -72,7 +74,6 @@ def makeframe(frame_path, anime_num):
             img = img[((h - h_f) // 2):((h - h_f) // 2 + h_f), :w_f]
         lp1, lp2 = left_box
         rp1, rp2 = right_box
-
 
         roi = cv2.resize(img, dsize=(lp2[0] - lp1[0], lp2[1] - lp1[1]), interpolation=cv2.INTER_AREA)
         frame[lp1[1]+3:lp2[1]+3, lp1[0]+3:lp2[0]+3] = roi
@@ -102,13 +103,15 @@ def makeframe(frame_path, anime_num):
     '''
     return frame, eigen
 
-def generateImage(frameNum, anime_num): # frameNum = 몇번째 프레임
+def generateImage(frameNum, anime_num): # frameNum = 몇번째 프레임, anime_num 은 리스트
     frame = 'frames_v2/'+str(frameNum)+'.png'
     result, eigen = makeframe(frame, anime_num) # 최종 이미지를 sada 서버에 올리기 (QR 연결되게)
     cv2.imwrite('results/' + eigen + '.png', result)
     #uploadtoServer('results/' + eigen + '.png', eigen)
     return frame
 
+
+generateImage(1, [1, 2])
 
 '''i=1
 for frame in glob.iglob('frames/*.jpg', recursive=True):

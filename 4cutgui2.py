@@ -188,6 +188,7 @@ while SB == 0:
             check2.show()
         if bool1 and bool2:
             SN = 3
+
     elif SN == 3:
         slide3.show()
         pygame.display.flip()
@@ -254,6 +255,6 @@ while SB == 0:
         mx, my = 0, 0
         counter = 0
         CUT = 1
-        ANIME_NUM = 0
+        ANIME_NUM = []
 
 pygame.quit()
