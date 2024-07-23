@@ -86,14 +86,18 @@ check2 = Obj()
 check2.put_img('gui_imgs/check.png')
 check2.change_size(250, 250)
 
-bool1, bool2 = False, False
+check3 = Obj()
+check3.put_img('gui_imgs/check.png')
+check3.change_size(250, 250)
+
+bool1, bool2, bool3 = False, False, False
 
 # slide event, frame
 SB = 0
 SN = 1
 slide1.show()
 FRAME_NUM = 0
-PEOPLE_NUM = 0
+ANIME_NUM = 0
 mx, my = 0, 0
 counter = 0
 CUT = 1
@@ -124,6 +128,7 @@ while SB == 0:
     # update
     # pygame.display.flip()
     pygame.display.update()
+    mx, my = 0, 0
     # sense inputs
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -140,11 +145,11 @@ while SB == 0:
         slide2.show()
         # check1
         if not bool1:
-            if 189 < mx < 453 and 178 < my < 577:
+            if 189 < mx < 348 and 178 < my < 577:
                 FRAME_NUM = 1
                 check1.x, check1.y = 194, 263
                 bool1 = True
-            elif 348 < mx < 768 and 178 < my < 577:
+            elif 353 < mx < 768 and 178 < my < 577:
                 FRAME_NUM = 2
                 check1.x, check1.y = 505, 263
                 bool1 = True
@@ -161,6 +166,27 @@ while SB == 0:
                 check1.x, check1.y = 1440, 263
                 bool1 = True
         # check2
+        if bool2 and not bool3:
+            if 189 < mx < 348 and 752 < my < 964:
+                ANIME_NUM = [ANIME_NUM, 1]
+                check3.x, check3.y = 194, 724
+                bool3 = True
+            elif 353 < mx < 768 and 753 < my < 963:
+                ANIME_NUM = [ANIME_NUM, 2]
+                check3.x, check3.y = 505, 724
+                bool3 = True
+            elif 807 < mx < 1077 and 753 < my < 963:
+                ANIME_NUM = [ANIME_NUM, 3]
+                check3.x, check3.y = 830, 724
+                bool3 = True
+            elif 1118 < mx < 1387 and 753 < my < 963:
+                ANIME_NUM = [ANIME_NUM, 4]
+                check3.x, check3.y = 1130, 724
+                bool3 = True
+            elif 1432 < mx < 1697 and 753 < my < 963:
+                ANIME_NUM = [ANIME_NUM, 5]
+                check3.x, check3.y = 1440, 724
+                bool3 = True
         if not bool2:
             if 189 < mx < 348 and 752 < my < 964:
                 ANIME_NUM = 1
@@ -186,7 +212,10 @@ while SB == 0:
             check1.show()
         if bool2:
             check2.show()
-        if bool1 and bool2:
+        if bool3:
+            check3.show()
+
+        if bool1 and bool2 and bool3:
             SN = 3
 
     elif SN == 3:
