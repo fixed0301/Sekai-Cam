@@ -239,7 +239,7 @@ while SB == 0:
 
         tt = 8 # time sec
         end = time.time()
-        number = myFont.render(str(tt-int(end-begin))+'          '+str(CUT)+'/4', True, (0, 0, 0))
+        number = myFont.render(str(tt-int(end-begin))+'          '+str(CUT)+'/2', True, (0, 0, 0))
         if int(end-begin) == tt:
             if not ret:
                 print("failed to grab frame")
@@ -251,7 +251,7 @@ while SB == 0:
             CUT += 1
             begin = time.time()
             pygame.time.delay(1500)
-            if CUT == 5:
+            if CUT == 3:
                 SN = 5
 
             '''ret, frame = cam.read()
