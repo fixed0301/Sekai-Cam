@@ -1,23 +1,27 @@
 import cv2
 import glob
 from qr import *
-from send_cam_img import *
-server_url = 'http://192.168.1.19:5000/animate'
+import time
+import requests
+
+server_url = 'http://0.tcp.jp.ngrok.io:18626/animate'
+
 def upload_image(image_path, server_url, anime_num):
     with open(image_path, 'rb') as file:
         upload = {'image': file}
         data = {'anime_num': anime_num}
-        while True:
-            try:
-                res = requests.post(server_url, files=upload, data=data, timeout=10)
-                if res.status_code == 200: # ? 밑에 result 는 그냥 photo를 같은데
-                    with open('result/img1_anigan.jpg', 'wb') as result_file:
-                        result_file.write(res.content)
-                    print("Image processed and saved successfully.")
-                    break
-            except requests.exceptions.RequestException as e:
-                print(f"Request failed: {e}. Retrying in 10 seconds...")
-                time.sleep(10)
+        # while true 잠깐 지움
+        try:
+            res = requests.post(server_url, files=upload, data=data, timeout=10)
+            if res.status_code == 200:
+                with open('anime_result/img1_anigan.jpg', 'wb') as result_file:
+                    result_file.write(res.content)
+                print("Image processed and saved successfully.")
+
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}. May?be Retrying in 10 seconds...")
+            requests.get(server_url, verify=False)
+            time.sleep(10)
 
 def makeframe(frame_path, anime_num):
     # 네컷 프레임 이미지 불러오기
@@ -43,14 +47,14 @@ def makeframe(frame_path, anime_num):
     # photos/anim/*.jpg
     # 4개 프레임에 대해 반복, 먼저 img1부터 처리하면
     for (filename, left_box, right_box) in zip(glob.iglob('photos/*.jpg', recursive=True), left_boxes.values(), right_boxes.values()):
-        img = cv2.imread(filename) # filename = 'photos/img1.jpg'
-
         if filename.split('.')[0][-1] == '1':
             image_path = 'photos/img1.jpg'
-            # 슉하고 처리할 이미지 정보를 보내면 ex. img1 처리해조
             upload_image(image_path, server_url, anime_num)
             print('animating and done')
             img = cv2.imread('anime_result/img1_anigan.jpg')
+        else:
+            img = cv2.imread(filename)  # filename = 'photos/img2.jpg'
+
 
         h = len(img)
         w = len(img[0])
@@ -98,25 +102,14 @@ def makeframe(frame_path, anime_num):
     '''
     return frame, eigen
 
-def animate():
-    pass
-    '''
-    for i in range(1,5):
-        name = 'img' + str(i) +'.jpg'
-        animateoneImage('photos/'+name,'photos/'+'anim/'+name) #save at 'photos/'+name'''
-
-
 def generateImage(frameNum, anime_num): # frameNum = 몇번째 프레임
-    frame = 'frames/'+str(frameNum)+'.jpg'
+    frame = 'frames_v2/'+str(frameNum)+'.png'
     result, eigen = makeframe(frame, anime_num) # 최종 이미지를 sada 서버에 올리기 (QR 연결되게)
     cv2.imwrite('results/' + eigen + '.png', result)
     #uploadtoServer('results/' + eigen + '.png', eigen)
-
     return frame
 
 
-
-# 모든 프레임에 대해 이미지 넣고 결과 저장하기
 '''i=1
 for frame in glob.iglob('frames/*.jpg', recursive=True):
     result,eigen = makeframe(frame)
